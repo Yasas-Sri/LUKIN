@@ -194,12 +194,12 @@ export function Navigationbar() {
       </NavigationMenuList>
     </NavigationMenu>
 
-    <div className="flex items-center gap-4">
+    {/* <div className="flex items-center gap-4">
         <SearchBar />
         <div className="relative cursor-pointer">
              
         </div>
-      </div>
+      </div> */}
 
     </div>
   )
