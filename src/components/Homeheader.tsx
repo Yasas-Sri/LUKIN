@@ -4,7 +4,7 @@ import { User, ShoppingBag } from "lucide-react";
 
 export function HomeHeader() {
   return (
-    <header className="w-full border-b bg-white">
+    <header className="">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 md:grid md:grid-cols-3">
         
     
