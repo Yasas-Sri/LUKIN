@@ -4,78 +4,53 @@ import { cn } from "@/lib/utils"
 
 interface CustomCardProps {
   title: string
-  description?: string
+  subtitle?: string
   imageSrc: string
   buttonText: string
-  // New Styling Props
-  height?: string       // e.g., "h-[500px]" or "h-[300px]"
-  textAlign?: "center" | "left"
-  imagePosition?: "full" | "right" | "left"
-  bgColor?: string
-  isDarkText?: boolean
+  containerStyles?: string 
+  contentStyles?: string   
+  textStyles?: string      
+  buttonStyles?: string    
 }
 
 export function CustomCard({ 
   title, 
-  description, 
+  subtitle, 
   imageSrc, 
-  buttonText,
-  height = "h-[300px]", 
-  textAlign = "left",
-  imagePosition = "right",
-  bgColor = "bg-white",
-  isDarkText = true
+  buttonText, 
+  containerStyles = "h-[400px] w-full rounded-xl", 
+  contentStyles = "items-start justify-end",
+  textStyles = "text-white text-3xl",
+  buttonStyles = "bg-white text-black"
 }: CustomCardProps) {
-  
   return (
-    <div className={cn(
-      "relative overflow-hidden rounded-[2rem] shadow-sm flex flex-col",
-      height,
-      bgColor,
-      textAlign === "center" ? "items-center text-center justify-center" : "items-start justify-between",
-    )}>
-      {/* Background Image Logic */}
-      <div className={cn(
-        "absolute overflow-hidden",
-        imagePosition === "full" ? "inset-0 w-full h-full" : 
-        imagePosition === "right" ? "right-0 bottom-0 w-1/2 h-full" : 
-        "left-0 bottom-0 w-1/2 h-full"
-      )}>
-        <Image 
-          src={imageSrc} 
-          alt={title} 
-          fill
-          className="object-cover object-center"
-        />
-        {imagePosition === "full" && <div className="absolute inset-0 bg-black/10" />}
-      </div>
-
-      {/* Content Layer */}
-      <div className={cn(
-        "relative z-10 flex h-full flex-col p-8 md:p-12",
-        textAlign === "center" ? "justify-center items-center gap-4" : "justify-between"
-      )}>
-        <div className={imagePosition === "full" ? "max-w-2xl" : "max-w-[240px]"}>
-          <h2 className={cn(
-            "font-medium leading-tight tracking-tight",
-            imagePosition === "full" ? "text-5xl md:text-6xl" : "text-3xl",
-            isDarkText ? "text-neutral-900" : "text-white"
-          )}>
+    <div className={cn("relative overflow-hidden group", containerStyles)}>
+      
+      <Image 
+        src={imageSrc} 
+        alt={title} 
+        fill
+        className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+      />
+      
+   
+      <div className={cn("absolute inset-0 flex flex-col p-8 z-10", contentStyles)}>
+        <div className="space-y-2">
+          <h2 className={cn("font-bold tracking-tight uppercase leading-tight", textStyles)}>
             {title}
           </h2>
-          {description && (
-            <p className={cn("mt-4", isDarkText ? "text-neutral-600" : "text-white/90")}>
-              {description}
+          {subtitle && (
+            <p className="text-white/80 text-sm md:text-base font-medium">
+              {subtitle}
             </p>
           )}
         </div>
 
-        <Button className={cn(
-          "rounded-full px-8 py-6 shadow-lg",
-          imagePosition === "full" ? "bg-orange-500 hover:bg-orange-600 text-white" : "bg-white text-black"
-        )}>
-          {buttonText}
-        </Button>
+        <div className="pt-4">
+          <Button className={cn("font-bold uppercase", buttonStyles)}>
+            {buttonText}
+          </Button>
+        </div>
       </div>
     </div>
   )
