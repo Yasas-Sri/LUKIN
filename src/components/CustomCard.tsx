@@ -10,7 +10,8 @@ interface CustomCardProps {
   containerStyles?: string 
   contentStyles?: string   
   textStyles?: string      
-  buttonStyles?: string    
+  buttonStyles?: string
+  imageStyles?: string    
 }
 
 export function CustomCard({ 
@@ -18,10 +19,11 @@ export function CustomCard({
   subtitle, 
   imageSrc, 
   buttonText, 
-  containerStyles = "h-[400px] w-full rounded-xl", 
+  containerStyles = " rounded-xl", 
   contentStyles = "items-start justify-end",
   textStyles = "text-white text-3xl",
-  buttonStyles = "bg-white text-black"
+  buttonStyles = "bg-white text-black",
+  imageStyles= "object-cover object-top"
 }: CustomCardProps) {
   return (
     <div className={cn("relative overflow-hidden group", containerStyles)}>
@@ -30,7 +32,8 @@ export function CustomCard({
         src={imageSrc} 
         alt={title} 
         fill
-        className="object-cover object-center transition-transform duration-500 group-hover:scale-105"
+        sizes="100vw"
+        className={cn("transition-transform duration-500 group-hover:scale-105", imageStyles)} 
       />
       
    
