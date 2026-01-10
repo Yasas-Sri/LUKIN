@@ -24,12 +24,13 @@ export default function CardSection() {
               buttonText="Shop"
       
               containerStyles={cn(
-                "h-[250px] md:h-[350px] rounded-2xl transition-transform hover:scale-[1.02]", 
+                "h-[250px]  w-[120px] md:w-[200px] rounded-2xl transition-transform hover:scale-[1.02]", 
                 cat.color
               )}
               contentStyles="items-start justify-end p-4 md:p-6"
               textStyles="text-xl md:text-2xl text-black font-semibold"
               buttonStyles="bg-black text-white text-[10px] px-4 py-2"
+              imageStyles="object-contain"
             />
           ))}
         </div>
