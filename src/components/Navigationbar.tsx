@@ -5,7 +5,7 @@ import Link from "next/link"
 import { CircleCheckIcon, CircleHelpIcon, CircleIcon } from "lucide-react"
 import { SearchBar } from "./Searchbar"
 
-// import { useIsMobile } from "@/hooks/use-mobile"
+
 import {
   NavigationMenu,
   NavigationMenuContent,
