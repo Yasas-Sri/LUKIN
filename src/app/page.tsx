@@ -1,5 +1,6 @@
 import { CustomCard } from "@/components/CustomCard";
 import CardSection from "@/components/CardSection";
+import ProductSection from "@/components/ProductSection";
 
 export default function Home() {
   return (
@@ -21,6 +22,8 @@ export default function Home() {
 />
 
  <CardSection/>
+
+ <ProductSection/>
 
     </div>
   );
