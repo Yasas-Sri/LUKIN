@@ -1,4 +1,5 @@
 import Image from "next/image"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -12,6 +13,7 @@ interface CustomCardProps {
   textStyles?: string      
   buttonStyles?: string
   imageStyles?: string    
+  href?: string
 }
 
 export function CustomCard({ 
@@ -23,9 +25,10 @@ export function CustomCard({
   contentStyles = "items-start justify-end",
   textStyles = "text-white text-3xl",
   buttonStyles = "bg-white text-black",
-  imageStyles= "object-cover object-top"
+  imageStyles= "object-cover object-top",
+  href
 }: CustomCardProps) {
-  return (
+  const content = (
     <div className={cn("relative overflow-hidden group", containerStyles)}>
       
       <Image 
@@ -57,4 +60,14 @@ export function CustomCard({
       </div>
     </div>
   )
+
+  if (href) {
+    return (
+      <Link href={href}>
+        {content}
+      </Link>
+    )
+  }
+
+  return content;
 }

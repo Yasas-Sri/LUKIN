@@ -21,7 +21,7 @@ export default function Home() {
   imageStyles="object-cover object-top"
 />
 
- <CardSection/>
+ {/* <CardSection/> */}
 
  <ProductSection/>
 
