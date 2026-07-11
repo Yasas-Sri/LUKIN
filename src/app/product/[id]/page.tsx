@@ -1,19 +1,12 @@
 /* eslint-disable @next/next/no-img-element */
+import { cookies } from "next/headers";
 import { Button } from "@/components/ui/button";
+import { createClient } from "@/utils/supabase/server";
+import type { Product } from "@/lib/types";
 
-// Optional: define the shape of the expected Product
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  images: string[];
-  category: {
-    id: number;
-    name: string;
-    image: string;
-  };
-}
+type ProductWithCategory = Product & {
+  category: { name: string; slug: string } | null;
+};
 
 export default async function ProductDetailPage({
   params,
@@ -21,11 +14,15 @@ export default async function ProductDetailPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = await params;
-  
-  // Fetch product data from the fake API
-  const res = await fetch(`https://api.escuelajs.co/api/v1/products/${id}`);
-  
-  if (!res.ok) {
+  const supabase = createClient(await cookies());
+
+  const { data } = await supabase
+    .from("products")
+    .select("*, category:categories(name, slug)")
+    .eq("id", id)
+    .single();
+
+  if (!data) {
     return (
       <div className="flex h-screen items-center justify-center">
         <h1 className="text-2xl font-bold">Product not found</h1>
@@ -33,21 +30,9 @@ export default async function ProductDetailPage({
     );
   }
 
-  const product: Product = await res.json();
-
-  // Clean up image URLs if they are malformed as a serialized array inside the string
-  const cleanImages = product.images.map((img) => {
-    if (img?.startsWith('["')) {
-      try {
-        return JSON.parse(img)[0];
-      } catch {
-        return img;
-      }
-    }
-    return img;
-  });
-
-  const mainImage = cleanImages[0] || "https://placehold.co/600x600";
+  const product = data as ProductWithCategory;
+  const images = product.images.length ? product.images : [product.thumbnail];
+  const mainImage = images[0];
 
   return (
     <div className="container mx-auto px-4 py-12 md:py-24">
@@ -62,9 +47,9 @@ export default async function ProductDetailPage({
             />
           </div>
           {/* Thumbnail Gallery (if more than 1 image) */}
-          {cleanImages.length > 1 && (
+          {images.length > 1 && (
             <div className="flex gap-4 overflow-x-auto pb-2">
-              {cleanImages.map((img, index) => (
+              {images.map((img, index) => (
                 <div
                   key={index}
                   className="relative aspect-square w-24 shrink-0 cursor-pointer overflow-hidden rounded-lg bg-gray-100 border-2 border-transparent hover:border-black transition-colors"
@@ -92,6 +77,11 @@ export default async function ProductDetailPage({
             <p className="text-2xl font-semibold mt-4">
               ${product.price}
             </p>
+            {product.stock > 0 ? (
+              <p className="text-sm text-green-600">In stock ({product.stock} available)</p>
+            ) : (
+              <p className="text-sm text-red-600">Out of stock</p>
+            )}
           </div>
 
           <div className="prose text-gray-700">
@@ -99,7 +89,6 @@ export default async function ProductDetailPage({
           </div>
 
           <div className="pt-8 border-t border-gray-200 flex flex-col gap-4">
-             {/* If we had sizes or colors, they would go here */}
             <Button size="lg" className="w-full md:w-auto text-lg h-14">
               Add to Cart
             </Button>
