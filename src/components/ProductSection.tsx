@@ -5,10 +5,12 @@ import type { Product } from "@/lib/types";
 
 export default async function ProductSection() {
   const supabase = createClient(await cookies());
+  // Clothes only — the brand's primary items. Accessories live in the navbar.
   const { data } = await supabase
     .from("products")
-    .select("*")
-    .order("id", { ascending: false })
+    .select("*, categories!inner(slug)")
+    .in("categories.slug", ["mens-shirts", "womens-dresses", "tops", "jackets"])
+    .order("rating", { ascending: false })
     .limit(8);
   const products = (data ?? []) as Product[];
 

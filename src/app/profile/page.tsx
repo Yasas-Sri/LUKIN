@@ -18,6 +18,7 @@ export default async function ProfilePage() {
   const { data } = await supabase
     .from("orders")
     .select("id, total, status, created_at, order_items(quantity, unit_price, product:products(title))")
+    .eq("user_id", user.id) // RLS alone isn't enough here: admins can read ALL orders
     .order("created_at", { ascending: false });
   const orders = data as
     | {
@@ -61,9 +62,17 @@ export default async function ProfilePage() {
               <div key={order.id} className="py-4 first:pt-0 last:pb-0">
                 <div className="flex items-center justify-between">
                   <p className="font-semibold">Order #{order.id}</p>
-                  <span className="text-xs uppercase tracking-widest rounded-full bg-neutral-100 px-3 py-1">
-                    {order.status}
-                  </span>
+                  <div className="flex items-center gap-3">
+                    <Link
+                      href={`/invoice/${order.id}`}
+                      className="text-xs underline hover:text-neutral-500"
+                    >
+                      Invoice
+                    </Link>
+                    <span className="text-xs uppercase tracking-widest rounded-full bg-neutral-100 px-3 py-1">
+                      {order.status}
+                    </span>
+                  </div>
                 </div>
                 <p className="text-sm text-gray-500">
                   {new Date(order.created_at).toLocaleDateString()}

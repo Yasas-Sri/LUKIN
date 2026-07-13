@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { cookies } from "next/headers";
-import { Button } from "@/components/ui/button";
+import { AddToCartButton } from "@/components/AddToCartButton";
 import { createClient } from "@/utils/supabase/server";
 import type { Product } from "@/lib/types";
 
@@ -89,9 +89,15 @@ export default async function ProductDetailPage({
           </div>
 
           <div className="pt-8 border-t border-gray-200 flex flex-col gap-4">
-            <Button size="lg" className="w-full md:w-auto text-lg h-14">
-              Add to Cart
-            </Button>
+            <AddToCartButton
+              product={{
+                id: product.id,
+                title: product.title,
+                price: product.price,
+                thumbnail: product.thumbnail,
+              }}
+              outOfStock={product.stock < 1}
+            />
             <p className="text-xs text-center md:text-left text-gray-500 mt-2">
               Free shipping on orders over $100.
             </p>

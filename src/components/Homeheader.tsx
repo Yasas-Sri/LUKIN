@@ -1,6 +1,7 @@
-import Link from "next/link"; 
+import Link from "next/link";
 import { SearchBar } from "./Searchbar";
-import { User, ShoppingBag } from "lucide-react"; 
+import { User } from "lucide-react";
+import { CartBadge } from "./CartBadge";
 
 export function HomeHeader() {
   return (
@@ -14,7 +15,7 @@ export function HomeHeader() {
 
         <div className="flex justify-center">
           <Link href="/" className="text-2xl font-bold tracking-tighter uppercase">
-            Brand
+            LUKIN
           </Link>
         </div>
 
@@ -23,13 +24,7 @@ export function HomeHeader() {
           <Link href="/profile" className="hover:text-neutral-500 transition-colors">
             <User className="h-6 w-6" />
           </Link>
-          <Link href="/cart" className="relative hover:text-neutral-500 transition-colors">
-            <ShoppingBag className="h-6 w-6" />
-           
-            <span className="absolute -top-1 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] font-bold text-white">
-              0
-            </span>
-          </Link>
+          <CartBadge />
         </div>
 
       </div>
