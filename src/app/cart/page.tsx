@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { Minus, Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/components/CartProvider";
-import { placeOrder } from "./actions";
+import { placeOrder, startCardCheckout } from "./actions";
 
 export default function CartPage() {
   const { items, setQty, remove, clear, subtotal, count } = useCart();
@@ -24,6 +24,22 @@ export default function CartPage() {
       clear();
       setOrderId(result.orderId);
     } else if (result.error === "not_authenticated") {
+      router.push("/login?next=/cart");
+    } else {
+      setError(result.error ?? "Something went wrong.");
+    }
+    setPlacing(false);
+  }
+
+  async function payWithCard() {
+    setPlacing(true);
+    setError(null);
+    const result = await startCardCheckout(items.map((i) => ({ id: i.id, qty: i.qty })));
+    if ("url" in result && result.url) {
+      window.location.assign(result.url); // off to Stripe; keep the button disabled
+      return;
+    }
+    if (result.error === "not_authenticated") {
       router.push("/login?next=/cart");
     } else {
       setError(result.error ?? "Something went wrong.");
@@ -112,11 +128,18 @@ export default function CartPage() {
         <p className="text-lg">
           Subtotal: <span className="font-bold">${subtotal.toFixed(2)}</span>
         </p>
-        <p className="text-xs text-gray-500">Free shipping on orders over $100. Cash on delivery.</p>
+        <p className="text-xs text-gray-500">
+          Free shipping on orders over $100. Pay by card or cash on delivery.
+        </p>
         {error && <p className="text-sm text-red-600">{error}</p>}
-        <Button size="lg" className="mt-2" onClick={checkout} disabled={placing}>
-          {placing ? "Placing order..." : "Checkout"}
-        </Button>
+        <div className="mt-2 flex gap-3">
+          <Button size="lg" variant="outline" onClick={checkout} disabled={placing}>
+            {placing ? "Please wait..." : "Cash on Delivery"}
+          </Button>
+          <Button size="lg" onClick={payWithCard} disabled={placing}>
+            {placing ? "Please wait..." : "Pay with Card"}
+          </Button>
+        </div>
       </div>
     </div>
   );

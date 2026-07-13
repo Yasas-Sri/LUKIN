@@ -6,6 +6,8 @@ import { Navigationbar } from "@/components/Navigationbar";
 import { HomeHeader } from "@/components/Homeheader";
 import Footer from "@/components/Footer";
 import { createClient } from "@/utils/supabase/server";
+import { CartProvider } from "@/components/CartProvider";
+import { ChatWidget } from "@/components/ChatWidget";
 import type { Category } from "@/lib/types";
 
 const geistSans = Geist({
@@ -40,13 +42,18 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
 
-       <header className="fixed top-0 left-0 right-0 z-50 bg-white">
+       <CartProvider>
+        <header className="fixed top-0 left-0 right-0 z-50 bg-white print:hidden">
           <HomeHeader />
           <Navigationbar categories={(categories ?? []) as Category[]} />
         </header>
         {children}
 
-        <Footer />
+        <div className="print:hidden">
+          <Footer />
+        </div>
+        <ChatWidget />
+       </CartProvider>
       </body>
     </html>
   );

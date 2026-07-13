@@ -1,25 +1,45 @@
 import { cookies } from "next/headers";
 import { CustomCard } from "@/components/CustomCard";
 import { createClient } from "@/utils/supabase/server";
-import type { Product } from "@/lib/types";
+import type { Category, Product } from "@/lib/types";
 
-export default async function ProductSection() {
+export default async function CategoryPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const supabase = createClient(await cookies());
-  // Clothes only — the brand's primary items. Accessories live in the navbar.
+
+  const { data: categoryData } = await supabase
+    .from("categories")
+    .select("*")
+    .eq("slug", slug)
+    .single();
+
+  if (!categoryData) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <h1 className="text-2xl font-bold">Category not found</h1>
+      </div>
+    );
+  }
+
+  const category = categoryData as Category;
   const { data } = await supabase
     .from("products")
-    .select("*, categories!inner(slug)")
-    .in("categories.slug", ["mens-shirts", "womens-dresses", "tops", "jackets"])
-    .order("rating", { ascending: false })
-    .limit(8);
+    .select("*")
+    .eq("category_id", category.id)
+    .order("id");
   const products = (data ?? []) as Product[];
 
   return (
-    <section className="container mx-auto px-4 mt-8 pb-20">
+    <section className="container mx-auto px-4 pt-40 pb-20">
       <div className="flex items-center justify-between m-8">
         <h2 className="text-2xl font-bold uppercase tracking-widest">
-          Latest Clothing
+          {category.name}
         </h2>
+        <p className="text-sm text-gray-500">{products.length} items</p>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
